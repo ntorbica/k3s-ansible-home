@@ -1,0 +1,6 @@
+---
+- name: Prepare VMs for k3s Cluster
+  hosts: proxmox
+  roles:
+    - proxmox_vm_create
+

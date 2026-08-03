@@ -1,0 +1,52 @@
+---
+- name: Stop Master VMs
+  community.proxmox.proxmox_kvm:
+    node: "{{ node }}"
+    api_host: "{{ api_host }}"
+    api_user: "{{ api_user }}"
+    api_password: "{{ api_password }}"
+    vmid: "{{ item.vmid }}"
+    state: stopped
+    validate_certs: false
+  loop: "{{ master_vms }}"
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+- name: Stop Agent VMs
+  community.proxmox.proxmox_kvm:
+    node: "{{ node }}"
+    api_host: "{{ api_host }}"
+    api_user: "{{ api_user }}"
+    api_password: "{{ api_password }}"
+    vmid: "{{ item.vmid }}"
+    state: stopped
+    validate_certs: false
+  loop: "{{ agent_vms }}"
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+- name: Destroy Master VMs
+  community.proxmox.proxmox_kvm:
+    node: "{{ node }}"
+    api_host: "{{ api_host }}"
+    api_user: "{{ api_user }}"
+    api_password: "{{ api_password }}"
+    vmid: "{{ item.vmid }}"
+    state: absent
+    validate_certs: false
+  loop: "{{ master_vms }}"
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+- name: Destroy Agent VMs
+  community.proxmox.proxmox_kvm:
+    node: "{{ node }}"
+    api_host: "{{ api_host }}"
+    api_user: "{{ api_user }}"
+    api_password: "{{ api_password }}"
+    vmid: "{{ item.vmid }}"
+    state: absent
+    validate_certs: false
+  loop: "{{ agent_vms }}"
+  vars:
+    ansible_python_interpreter: /usr/bin/python3

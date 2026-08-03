@@ -1,0 +1,113 @@
+---
+- name: Create Master Node VMs
+  community.proxmox.proxmox_kvm:
+    node: "{{ node }}"
+    api_host: "{{ api_host }}"
+    api_user: "{{ api_user }}"
+    api_password: "{{ api_password }}"
+    clone: "{{ source_vm_name }}"
+    newid: "{{ item.vmid }}"
+    name: "{{ item.vm_name }}"
+    full: yes
+    validate_certs: false
+  loop: "{{ master_vms }}"
+  register: clone_results
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+- name: Create Agent Node VMs
+  community.proxmox.proxmox_kvm:
+    node: "{{ node }}"
+    api_host: "{{ api_host }}"
+    api_user: "{{ api_user }}"
+    api_password: "{{ api_password }}"
+    clone: "{{ source_vm_name }}"
+    newid: "{{ item.vmid }}"
+    name: "{{ item.vm_name }}"
+    full: yes
+    validate_certs: false
+  loop: "{{ agent_vms }}"
+  register: clone_results
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+- name: Update Master VM Configuration
+  community.proxmox.proxmox_kvm:
+    node: "{{ node }}"
+    api_host: "{{ api_host }}"
+    api_user: "{{ api_user }}"
+    api_password: "{{ api_password }}"
+    vmid: "{{ item.vmid }}"
+    update: true
+    ipconfig:
+      ipconfig0: "ip={{ item.vm_ip }}/24,gw=192.168.1.1"
+    memory: "{{ item.vm_memory }}"
+    cores: "{{ item.vm_cores }}"
+    ciuser: "{{ proxmox_ciuser }}"
+    sshkeys: "{{ proxmox_ciuser_sshkey }}"
+    validate_certs: false
+  loop: "{{ master_vms }}"
+  register: clone_results
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+- name: Update Master VM Configuration
+  community.proxmox.proxmox_kvm:
+    node: "{{ node }}"
+    api_host: "{{ api_host }}"
+    api_user: "{{ api_user }}"
+    api_password: "{{ api_password }}"
+    vmid: "{{ item.vmid }}"
+    update: true
+    ipconfig:
+      ipconfig0: "ip={{ item.vm_ip }}/24,gw=192.168.1.1"
+    memory: "{{ item.vm_memory }}"
+    cores: "{{ item.vm_cores }}"
+    ciuser: "ntorbica"
+    sshkeys: "{{ proxmox_ciuser_sshkey }}"
+    validate_certs: false
+  loop: "{{ agent_vms }}"
+  register: clone_results
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+- name: Start Master VMs
+  community.proxmox.proxmox_kvm:
+    node: "{{ node }}"
+    api_host: "{{ api_host }}"
+    api_user: "{{ api_user }}"
+    api_password: "{{ api_password }}"
+    vmid: "{{ item.vmid }}"
+    state: started
+    validate_certs: false
+  loop: "{{ master_vms }}"
+  register: clone_results
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+- name: Start Agent VMs
+  community.proxmox.proxmox_kvm:
+    node: "{{ node }}"
+    api_host: "{{ api_host }}"
+    api_user: "{{ api_user }}"
+    api_password: "{{ api_password }}"
+    vmid: "{{ item.vmid }}"
+    state: started
+    validate_certs: false
+  loop: "{{ agent_vms }}"
+  register: clone_results
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+- name: Add NFS Storage to Proxmox
+  community.proxmox.proxmox_storage:
+    api_host: "{{ api_host }}"
+    api_user: "{{ api_user }}"
+    api_password: "{{ api_password }}"
+    validate_certs: false
+    name: k3s-storage
+    type: nfs
+    nfs_options:
+      server: 192.168.1.36
+      export: /volume1/k3s
+    state: present

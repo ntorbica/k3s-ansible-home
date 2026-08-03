@@ -1,0 +1,4 @@
+- name: Destroy k3s VM setup
+  hosts: proxmox
+  roles:
+    - proxmox_vm_destroy

@@ -1,0 +1,53 @@
+node: hive
+ansible_python_interpreter: /usr/bin/python3
+proxmox_ciuser: ntorbica
+proxmox_ciuser_sshkey: "{{  lookup('ansible.builtin.file', '/home/ntorbica/.ssh/pop_proxmox.pub') }}"
+
+api_token_id: ansible
+api_token_secret: 389fb16e-c5ca-4e09-b71e-c9b2c3ea588c
+api_password: N31n1chW1llN1cht!
+api_host: 127.0.0.1
+api_user: root@pam
+
+source_vm_name: "k3s-debian"
+source_vmid: 1000
+
+master_vm_memory: 4096
+agent_vm_memory: 4096
+
+master_vm_cores: 2
+agent_vm_cores: 2
+
+master_vms:
+  - vm_name: k3s-master1
+    vmid: 501
+    vm_ip: 192.168.1.51
+    vm_memory: "{{ master_vm_memory }}"
+    vm_cores: "{{ master_vm_cores }}"
+  - vm_name: k3s-master2
+    vmid: 502
+    vm_ip: 192.168.1.52
+    vm_memory: "{{ master_vm_memory }}"
+    vm_cores: "{{ master_vm_cores }}"
+  - vm_name: k3s-master3
+    vmid: 503
+    vm_ip: 192.168.1.53
+    vm_memory: "{{ master_vm_memory }}"
+    vm_cores: "{{ master_vm_cores }}"
+
+agent_vms:
+  - vm_name: k3s-agent1
+    vmid: 601
+    vm_ip: 192.168.1.61
+    vm_memory: "{{ agent_vm_memory }}"
+    vm_cores: "{{ agent_vm_cores }}"
+  - vm_name: k3s-agent2
+    vmid: 602
+    vm_ip: 192.168.1.62
+    vm_memory: "{{ agent_vm_memory }}"
+    vm_cores: "{{ agent_vm_cores }}"
+  - vm_name: k3s-agent3
+    vmid: 603
+    vm_ip: 192.168.1.63
+    vm_memory: "{{ agent_vm_memory }}"
+    vm_cores: "{{ agent_vm_cores }}"

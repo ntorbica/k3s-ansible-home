@@ -1,0 +1,24 @@
+node: hive
+proxmox_ciuser: ntorbica
+
+api_token_id: a1
+api_token_secret: 389fb16e-c5ca-4e09-b71e-c9b2c3ea588c
+api_password: N31n1chW1llN1cht!
+api_host: 127.0.0.1
+api_user: root@pam
+
+master_vms:
+  - vm_name: k3s-master1
+    vmid: 501
+  - vm_name: k3s-master2
+    vmid: 502
+  - vm_name: k3s-master3
+    vmid: 503
+
+agent_vms:
+  - vm_name: k3s-agent1
+    vmid: 601
+  - vm_name: k3s-agent2
+    vmid: 602
+  - vm_name: k3s-agent3
+    vmid: 603
